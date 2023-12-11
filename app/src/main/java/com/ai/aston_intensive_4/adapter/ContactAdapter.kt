@@ -15,6 +15,7 @@ import com.ai.aston_intensive_4.R
 import com.ai.aston_intensive_4.fragments.EditContactFragment
 import com.ai.aston_intensive_4.model.Contact
 import com.google.android.material.card.MaterialCardView
+import com.squareup.picasso.Picasso
 
 class ContactAdapter(
     private val context: Context): RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
@@ -42,7 +43,7 @@ class ContactAdapter(
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         val currentContact = contactList[position]
         holder.apply {
-            contactPhoto.setImageResource(currentContact.photo)
+            Picasso.get().load(currentContact.photoUrl).into(holder.contactPhoto)
             contactFirstName.text = currentContact.firstName
             contactLastName.text = currentContact.lastName
             contactPhone.text = currentContact.phone

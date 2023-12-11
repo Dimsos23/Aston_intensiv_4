@@ -1,6 +1,10 @@
 package com.ai.aston_intensive_4.fragments
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +12,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import com.ai.aston_intensive_4.R
 import com.ai.aston_intensive_4.model.Contact
+import com.squareup.picasso.Picasso
 
 
 class EditContactFragment(private val contact: Contact) : Fragment() {
+
+    private lateinit var imageViewPhoto: ImageView
+    private var selectedImageUri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,32 +39,29 @@ class EditContactFragment(private val contact: Contact) : Fragment() {
         val buttonEdit: Button = view.findViewById(R.id.button_edit)
         val buttonCancel: Button = view.findViewById(R.id.button_cancel)
 
-        val imageViewPhoto: ImageView = view.findViewById(R.id.image_edit_contact)
+        imageViewPhoto = view.findViewById(R.id.image_edit_contact)
         val textFirstname: EditText = view.findViewById(R.id.edit_text_firstname)
         val textLastname: EditText = view.findViewById(R.id.edit_text_lastname)
         val textPhone: EditText = view.findViewById(R.id.edit_text_phone)
 
-        var intResourceId = contact.photo
+        Picasso.get().load(contact.photoUrl).into(imageViewPhoto)
 
-        imageViewPhoto.setImageResource(contact.photo)
         textFirstname.setText(contact.firstName)
         textLastname.setText(contact.lastName)
         textPhone.setText(contact.phone)
 
         imageViewPhoto.setOnClickListener {
-            if (intResourceId == R.drawable.unknown_person_man) {
-                intResourceId = R.drawable.unknown_person_woman
-                imageViewPhoto.setImageResource(intResourceId)
-            } else {
-                intResourceId = R.drawable.unknown_person_man
-                imageViewPhoto.setImageResource(intResourceId)
-            }
+            openGallery()
         }
 
         buttonEdit.setOnClickListener {
+            if (selectedImageUri == null) {
+                val uri = Uri.parse(contact.photoUrl)
+                selectedImageUri = uri
+            }
             val newContact = Contact(
                 id = contact.id,
-                photo = intResourceId,
+                photoUrl = selectedImageUri.toString(),
                 firstName = textFirstname.text.toString(),
                 lastName = textLastname.text.toString(),
                 phone = textPhone.text.toString()
@@ -79,5 +85,21 @@ class EditContactFragment(private val contact: Contact) : Fragment() {
                 .setReorderingAllowed(true)
                 .commit()
         }
+    }
+
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                if (data != null) {
+                    selectedImageUri = data.data
+                    imageViewPhoto.setImageURI(selectedImageUri)
+                }
+            }
+        }
+
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        galleryLauncher.launch(intent)
     }
 }
