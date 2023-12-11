@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="my_color">#00C853</color>
-    <color name="background_color_task1">#F0F4C3</color>
-    <color name="background_color_task2">#F8FAEA</color>
-    <color name="my_card_color">#CFF6A1</color>
-</resources>
