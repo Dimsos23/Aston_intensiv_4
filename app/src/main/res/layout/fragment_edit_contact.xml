@@ -10,7 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
         android:layout_marginBottom="100dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
 
         <ImageView
             android:id="@+id/image_edit_contact"
@@ -19,6 +20,7 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:clickable="true"
             android:focusable="true"
+            android:contentDescription="@string/description_image_edit_photo"
             tools:src="@drawable/unknown_person_man" />
 
         <LinearLayout
